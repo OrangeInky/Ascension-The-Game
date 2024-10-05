@@ -1,0 +1,78 @@
+<title w-tid="3">Ascension</title><meta charset="UTF-8" w-tid="4"><meta name="viewport" content="width=device-width, initial-scale=1.0" w-tid="5"></head><body w-tid="7">
+<link rel="stylesheet" href="style.css">
+<h1 w-tid="8">Ascension</h1>
+
+<div class="stats-container" w-tid="9">
+    <div class="stat" w-tid="10">
+        <div class="stat-name" w-tid="11">Power <span id="power-level" w-tid="12">0</span></div>
+        <div class="stat-value" id="power" w-tid="13">0</div>
+        <button onclick="startTraining('power')" id="power-btn" w-tid="14">Train Power</button>
+        <div class="progress-bar" w-tid="15"><div class="progress" id="power-progress" w-tid="16" style="width: 0%;"></div></div>
+        <div class="taskbar" w-tid="17"><div class="taskbar-progress" id="power-taskbar" w-tid="18" style="width: 0%;"></div></div>
+    </div>
+    
+    <div class="stat" w-tid="19">
+        <div class="stat-name" w-tid="20">Knowledge <span id="knowledge-level" w-tid="21">0</span></div>
+        <div class="stat-value" id="knowledge" w-tid="22">0</div>
+        <button onclick="startTraining('knowledge')" id="knowledge-btn" w-tid="23">Study Knowledge</button>
+        <div class="progress-bar" w-tid="24"><div class="progress" id="knowledge-progress" w-tid="25" style="width: 0%;"></div></div>
+        <div class="taskbar" w-tid="26"><div class="taskbar-progress" id="knowledge-taskbar" w-tid="27" style="width: 0%;"></div></div>
+    </div>
+    
+    <div class="stat" w-tid="28">
+        <div class="stat-name" w-tid="29">Endurance <span id="endurance-level" w-tid="30">0</span></div>
+        <div class="stat-value" id="endurance" w-tid="31">0</div>
+        <button onclick="startTraining('endurance')" id="endurance-btn" w-tid="32">Improve Endurance</button>
+        <div class="progress-bar" w-tid="33"><div class="progress" id="endurance-progress" w-tid="34" style="width: 0%;"></div></div>
+        <div class="taskbar" w-tid="35"><div class="taskbar-progress" id="endurance-taskbar" w-tid="36" style="width: 0%;"></div></div>
+    </div>
+</div>
+
+<div class="controls" w-tid="37">
+    <button onclick="toggleParticleEffects()" id="particle-toggle" w-tid="38">Toggle Particle Effects</button>
+    <button onclick="showDetailedStats()" w-tid="39">Show Detailed Stats</button>
+</div>
+
+<div id="ascension-message" w-tid="40" style="opacity: 0;">You have been defeated! The boss recovers some health.</div>
+
+<div id="player-container" w-tid="41">
+    <h2 w-tid="42">Player</h2>
+    <div w-tid="43">Health: <span id="player-health-value" w-tid="44">100</span> / <span id="player-max-health" w-tid="45">100</span></div>
+    <div class="health-bar" w-tid="46"><div class="health" id="player-health" w-tid="47" style="width: 100%;"></div></div>
+</div>
+
+<div id="boss-container" w-tid="48">
+    <h2 w-tid="49"> <span id = "boss-title"> Boss #1 </span></h2>
+    <div w-tid="50">Health: <span id="boss-health-value" w-tid="51">200</span> / <span id="boss-max-health" w-tid="52">200</span></div>
+    <div class="health-bar" w-tid="53"><div class="health" id="boss-health" w-tid="54" style="width: 100%;"></div></div>
+    <button onclick="startAttackBoss()" id="attack-btn" w-tid="55">Attack Boss</button>
+    <button onclick="switchBoss(-1)" id="prev-boss-btn" w-tid="56">Previous Boss</button>
+    <button onclick="switchBoss(1)" id="next-boss-btn" w-tid="57" disabled="">Next Boss</button>
+    <div class="taskbar" w-tid="58"><div class="taskbar-progress" id="attack-taskbar" w-tid="59" style="width: 0%;"></div></div>
+</div>
+
+
+<!--stats stuff-->
+<div id="stats-overlay" class="overlay" w-tid="60" style="display: none;">
+    <div class="overlay-content" w-tid="61">
+        <h2 w-tid="62">Detailed Stats</h2>
+        <div id="detailed-stats" w-tid="63">
+    </div>
+        <button onclick="closeStatsOverlay()" w-tid="64">Close</button>
+    </div>
+</div>
+
+<!--rebirth stuff-->
+<div id="rebirth-overlay" class='overlay' style="display: none">
+	<div class='overlay-content'>
+		<button onclick="rebirth['closeRebirthOverlay']()" class="rebirth-buttons">Close</button>
+	</div>
+
+</div>
+
+<button id= "rebirth-button" class="rebirth-buttons" style="position: absolute; left: 0px; top: 1%; display: none;" onclick="rebirth['openRebirthOverlay']()"> Rebirth </button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" w-tid="65"></script>
+<script src="main.js" w-tid="65"></script>
+<script src="misc.js" w-tid="65"></script>
+</body></html>
