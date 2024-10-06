@@ -118,6 +118,13 @@ const rebirth = {
 }
 
 
+function passiveRegenLoop() {
+	let Timer = setInterval(()=> {
+		player.health = Math.min(player.health + 3 + ascensionCount.endurance*6,player.maxHealth)
+		updatePlayerHealth();
+	},3000)
+}
+
 function startTraining(stat) {
     if (trainingTimers[stat]) return; // Training already in progress
     
@@ -307,7 +314,6 @@ function createAscensionParticle(stat) {
 
 function updatePlayerMaxHealth() {
     player.maxHealth = 100 + (ascensionCount.endurance * 50); // 50 health per endurance ascension
-    player.health = player.maxHealth; // Fully heal on ascension
     updatePlayerHealth();
 }
 
@@ -352,7 +358,7 @@ function attackBoss() {
 
 function bossAttack() {
     const bossDamage = Math.floor(boss.maxHealth * 0.05); // 10% of boss max health
-    const damageReduction = 1 / (1+ascensionCount.endurance/10);
+    const damageReduction = 1 / (1+ascensionCount.endurance/30);
     const finalDamage = Math.floor(bossDamage * damageReduction);
     
     player.health = Math.max(0, player.health - finalDamage);

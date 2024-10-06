@@ -71,3 +71,4 @@ function saveLoop(){
 }
 loadGame();
 saveLoop();
+passiveRegenLoop();
