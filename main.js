@@ -120,7 +120,7 @@ const rebirth = {
 
 function passiveRegenLoop() {
 	let Timer = setInterval(()=> {
-		player.health = Math.min(player.health + 3 + ascensionCount.endurance*6,player.maxHealth)
+		player.health = Math.min(player.health + Math.floor(Math.sqrt(1 + ascensionCount.endurance*2)),player.maxHealth)
 		updatePlayerHealth();
 	},3000)
 }
@@ -165,7 +165,7 @@ function ascensionDisplay(stat) {
 function completeTraining(stat) {
     const baseIncrease = Math.floor(Math.random() * 6) + 5;
     const knowledgeBonus = 1 + (ascensionCount.knowledge * 0.1);
-    const increase = Math.floor(baseIncrease * knowledgeBonus * permanentMultiplier * rebirth['multipliers'][stat]);
+    const increase = Math.floor(baseIncrease * knowledgeBonus * permanentMultiplier * rebirth['multipliers'][stat] / Math.floor(1+ascensionCount[stat]/20));
     
     stats[stat] += increase;
 	statDisplay(stat)
@@ -313,7 +313,7 @@ function createAscensionParticle(stat) {
 }
 
 function updatePlayerMaxHealth() {
-    player.maxHealth = 100 + (ascensionCount.endurance * 50); // 50 health per endurance ascension
+    player.maxHealth = 100 + (ascensionCount.endurance * 10); // 50 health per endurance ascension
     updatePlayerHealth();
 }
 
@@ -342,9 +342,10 @@ function startAttackBoss() {
 }
 
 function attackBoss() {
+	const bossArmor = 5*boss.level-5
     const baseDamage = 10+ascensionCount.power;
     const powerBonus = 1 + (ascensionCount.power * 0.2); // 20% increase per power ascension
-    const damage = Math.floor(baseDamage * powerBonus);
+    const damage = Math.floor(baseDamage * powerBonus * (1/(1+bossArmor/30))) - bossArmor;
     
     boss.health = Math.max(0, boss.health - damage);
     updateBossHealth();
@@ -357,7 +358,7 @@ function attackBoss() {
 }
 
 function bossAttack() {
-    const bossDamage = Math.floor(boss.maxHealth * 0.05); // 10% of boss max health
+    const bossDamage = Math.floor(boss.maxHealth * 0.1)*boss.level; // 10% of boss max health
     const damageReduction = 1 / (1+ascensionCount.endurance/30);
     const finalDamage = Math.floor(bossDamage * damageReduction);
     
@@ -413,11 +414,11 @@ function defeatBoss() {
     } else {
         permanentMultiplier += Math.log(boss.maxHealth)/2000;
     }
-
-    maxBossLevel = Math.max(maxBossLevel, currentBossLevel + 1);
+	generateBoss(currentBossLevel);
+	if(currentBossLevel == maxBossLevel) {currentBossLevel++}
+	maxBossLevel = Math.max(maxBossLevel, currentBossLevel);
+	if (currentBossLevel >= maxBossLevel) {currentBossLevel--}
 	rebirth['reveal']();
-    currentBossLevel++;
-    generateBoss(currentBossLevel);
     updateBossHealth();
     updateBossButtons();
 	updateBossTitle();
@@ -425,7 +426,7 @@ function defeatBoss() {
 
 function generateBoss(level) {
     boss.level = level;
-    boss.maxHealth = Math.floor(200 * Math.pow(1.5, level - 1));
+    boss.maxHealth = Math.floor(200 * Math.pow(1.2, level - 1) + 30*boss.level-30);
     boss.health = boss.maxHealth;
 }
 
