@@ -169,6 +169,9 @@ function completeTraining(stat) {
 }
 
 function levelUp(stat) {
+	if(stats[stat]>statThresholds[stat]*30) {
+		levelUpMax(stat);
+	}
     const overflow = stats[stat] - Math.floor(statThresholds[stat]);
     stats[stat] = overflow;
     ascensionCount[stat]++;
@@ -182,7 +185,55 @@ function levelUp(stat) {
     }
 }
 
-function ascend(stat) {
+function levelNRequirement(N,Current) {
+	return 100*((1-1.01005017**(N))/(1-1.01005017) - (1-1.01005017**(Current))/(1-1.01005017))
+}
+
+function levelUpMax(stat) {
+	let current = ascensionCount[stat];
+	let aim = findMaxBalancingPoint(stats[stat],1,current);
+	aim-=1;
+	stats[stat]-=Math.floor(levelNRequirement(aim,current))
+	ascensionCount[stat]+=(aim-current);
+	statThresholds[stat]*=1.01005017**(aim-current);
+	ascend(stat,true,aim);
+}
+
+function findMaxBalancingPoint(currency,a,b) {
+	let iteration = 0;
+    let aPrev = a;
+    let aCurrent = a;
+
+    // Check if balance is greater than g(a, b)
+    if (currency <= levelNRequirement(aCurrent, b)) {
+        return
+    }
+
+    // Multiply 'a' by powers of 2 until balance < g(a, b)
+    let powerOfTwo = 1;
+    while (currency > levelNRequirement(aCurrent, b)) {
+        powerOfTwo *= 2;
+        aPrev = aCurrent;
+        aCurrent = a * powerOfTwo;
+    }
+
+    // Binary search-like refinement process
+    for (let i = 0; i < 10; i++) {
+        let average = (aPrev + aCurrent) / 2;
+
+        // Refine 'a' based on balance comparison with g(a,b)
+        if (levelNRequirement(average, b) <= currency) {
+            aPrev = average;
+        } else {
+            aCurrent = average;
+        }
+    }
+
+    // Return the refined value of 'a'
+    return Math.floor(aPrev);
+}
+
+function ascend(stat,altMessage=false,n) {
     document.getElementById(stat).textContent = stats[stat];
     
     const ascensionMessage = document.getElementById('ascension-message');
@@ -192,18 +243,22 @@ function ascend(stat) {
 	setTimeout(() => {
 		ascensionMessage.style.opacity = 0;
 	},3000)
+	
+	ascensionDisplay(stat)
 
     createAscensionParticle(stat);
 
     const ascensionParticle = document.createElement('div');
     ascensionParticle.className = 'ascension-particle';
-    ascensionParticle.textContent = `${stat.charAt(0).toUpperCase() + stat.slice(1)} Ascended!`;
+	if (altMessage) {
+		ascensionParticle.textContent = `${stat.charAt(0).toUpperCase() + stat.slice(1)} Ascended +${n} Times!`
+	}
     document.body.appendChild(ascensionParticle);
 
     setTimeout(() => {
         ascensionParticle.style.opacity = 0;
         document.body.removeChild(ascensionParticle);
-    }, 2000);
+    }, 4000);
 
     gsap.to(`.stat`, {
         scale: 1.1,
@@ -326,7 +381,11 @@ function playerDeath() {
 
 function defeatBoss() {
     const ascensionMessage = document.getElementById('ascension-message');
-    ascensionMessage.textContent = `Boss defeated! You gain a boost to all stats!`;
+	if(!bossDefeats[boss.level]) {
+		ascensionMessage.textContent = `First defeat! You gain a +${(Math.log(boss.maxHealth)/100).toFixed(3)} multiplier to all stats!`;	
+	} else {
+		ascensionMessage.textContent = `Boss defeated! You gain a +${(Math.log(boss.maxHealth)/2000).toFixed(3)} multiplier to all stats!`;
+	}
     ascensionMessage.style.opacity = 1;
     
     setTimeout(() => {

@@ -1,7 +1,12 @@
+function average(a,b) {
+	return (a+b)/2
+}
+
 //SAVE&LOAD&RESET V.2
 function saveGame () {
 	let gameData = {
 		save_stats: stats,
+		save_statThresholds: statThresholds,
 		save_ascensionCount: ascensionCount,
 		save_player: player,
 		save_boss: boss,
@@ -38,7 +43,15 @@ function loadGame () {
 	rebirth['multipliers'] = gameData.save_rebirth_multipliers;
 
 	//backward compatibility
-	if (typeof "undefined" === "undefined") {}
+	if (typeof gameData.save_statThresholds === "undefined") {
+		statThresholds = {
+			power: ASCENSION_THRESHOLD,
+			knowledge: ASCENSION_THRESHOLD,
+			endurance: ASCENSION_THRESHOLD
+		};
+	} else{
+		statThresholds = gameData.save_statThresholds;
+	}
 	updateBossHealth();
 	updateBossButtons();
 	updateBossTitle();
