@@ -43,6 +43,12 @@ function loadGame () {
 	updateBossButtons();
 	updateBossTitle();
 	updatePlayerHealth();
+	ascensionDisplay('power')
+	ascensionDisplay('knowledge')
+	ascensionDisplay('endurance')
+	statDisplay('power')
+	statDisplay('knowledge')
+	statDisplay('endurance')
 }
 
 //GAMELOOP

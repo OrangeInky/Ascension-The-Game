@@ -142,16 +142,26 @@ function startTraining(stat) {
     }, 100); // Update every 100ms for smooth animation
 }
 
+function statDisplay(stat) {
+    document.getElementById(stat).textContent = stats[stat];
+    const progressPercent = (stats[stat] / statThresholds[stat]) * 100;
+    document.getElementById(`${stat}-progress`).style.width = `${progressPercent}%`;
+}
+
+function ascensionDisplay(stat) {
+	document.getElementById(`${stat}-level`).textContent = ascensionCount[stat];
+    document.getElementById(stat).textContent = stats[stat];
+    const progressPercent = (stats[stat] / statThresholds[stat]) * 100;
+    document.getElementById(`${stat}-progress`).style.width = `${progressPercent}%`;
+}
+
 function completeTraining(stat) {
     const baseIncrease = Math.floor(Math.random() * 6) + 5;
     const knowledgeBonus = 1 + (ascensionCount.knowledge * 0.1);
     const increase = Math.floor(baseIncrease * knowledgeBonus * permanentMultiplier * rebirth['multipliers'][stat]);
     
     stats[stat] += increase;
-    document.getElementById(stat).textContent = stats[stat];
-    
-    const progressPercent = (stats[stat] / statThresholds[stat]) * 100;
-    document.getElementById(`${stat}-progress`).style.width = `${progressPercent}%`;
+	statDisplay(stat)
     
     if (stats[stat] >= statThresholds[stat]) {
         levelUp(stat);
@@ -163,12 +173,8 @@ function levelUp(stat) {
     stats[stat] = overflow;
     ascensionCount[stat]++;
     statThresholds[stat] *= 1.01005017;
-    document.getElementById(`${stat}-level`).textContent = ascensionCount[stat];
-    document.getElementById(stat).textContent = stats[stat];
-    const progressPercent = (stats[stat] / statThresholds[stat]) * 100;
-    document.getElementById(`${stat}-progress`).style.width = `${progressPercent}%`;
     ascend(stat);
-    console.log(overflow)
+	
     if (stats[stat] >= statThresholds[stat]) {
 		setTimeout(() => {
 			levelUp(stat);
